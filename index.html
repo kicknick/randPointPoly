@@ -1,0 +1,269 @@
+<html>
+<head>
+	<title></title>
+</head>
+
+<body>
+<canvas id="myCanvas" style="position:absolute; left:10; top:10;">
+<script type="text/javascript">
+
+
+
+
+
+
+A = [10, 15]
+B = [50, 5]
+C = [100, 100]
+
+
+
+
+
+	var mapArray = [
+		{ 
+			"_id" : "WALKING STREET", 
+			"type" : "AREA", 
+			"area" : "WALKING STREET", 
+			"color" : "ffb3cc", 
+			"coords" : [
+				{
+					"latitude" : 12.925478, 
+					"longitude" : 100.869984
+				}, 
+				{
+					"latitude" : 12.924389, 
+					"longitude" : 100.870547
+				}, 
+				{
+					"latitude" : 12.926321, 
+					"longitude" : 100.875402
+				},
+
+				{
+					"latitude" : 12.924316, 
+					"longitude" : 100.873004
+				}, 
+								{
+					"latitude" : 12.924734, 
+					"longitude" : 100.871137
+				}, 
+ 
+				{
+					"latitude" : 12.927785, 
+					"longitude" : 100.874399
+				}
+			]
+		},
+		{ 
+			"_id" : "NAKLUA SOI 33", 
+			"type" : "AREA", 
+			"area" : "NAKLUA SOI 33", 
+			"color" : "ffb3cc", 
+			"coords" : [
+				{
+					"latitude" : 12.9527479, 
+					"longitude" : 100.88856897
+				}, 
+				{
+					"latitude" : 12.9521676, 
+					"longitude" : 100.88813982
+				}, 
+				{
+					"latitude" : 12.95205258, 
+					"longitude" : 100.88842413
+				}, 
+				{
+					"latitude" : 12.95221988, 
+					"longitude" : 100.88853142
+				}, 
+				{
+					"latitude" : 12.95188529, 
+					"longitude" : 100.89017293
+				}, 
+				{
+					"latitude" : 12.95218328, 
+					"longitude" : 100.89026413
+				}, 
+				{
+					"latitude" : 12.95244468, 
+					"longitude" : 100.88867626
+				}, 
+				{
+					"latitude" : 12.95266948, 
+					"longitude" : 100.88882378
+				}, 
+				{
+					"latitude" : 12.9527479, 
+					"longitude" : 100.88856897
+				}
+			]
+		},
+
+				{ 
+			"_id" : "NAKLUA SOI 33", 
+			"type" : "AREA", 
+			"area" : "NAKLUA SOI 33", 
+			"color" : "ffb3cc", 
+			"coords" : [
+				{
+					"latitude" : 50, 
+					"longitude" : 50
+				}, 
+				{
+					"latitude" : 200, 
+					"longitude" : 50
+				},  
+				{
+					"latitude" : 300, 
+					"longitude" : 100
+				},
+				{
+					"latitude" : 350, 
+					"longitude" : 250
+				},
+				{
+					"latitude" : 250, 
+					"longitude" : 350
+				},
+				{
+					"latitude" : 100, 
+					"longitude" : 300
+				},
+				{
+					"latitude" : 50, 
+					"longitude" : 150
+				},
+				{
+					"latitude" : 50, 
+					"longitude" : 50
+				},
+
+			]
+		}
+	]
+
+
+
+	// let pointNaklua = findRandomPoint(mapArray[1]);
+	// console.log("Random point in Naklua area: " + pointNaklua)
+
+
+
+var ctx = myCanvas.getContext("2d");
+  ctx.canvas.width  = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
+
+
+
+
+
+
+var coords
+
+
+function findRandomPoint(poly) {
+	 let sqrt = (a) => {
+		return Math.sqrt(a)
+	}
+
+	function getRandomOnTriangle(A, B, C) {
+		const r1 = Math.random()
+		const r2 = Math.random()
+		let P1 = (1 - sqrt(r1)) * A[0] + (sqrt(r1) * (1 - r2)) * B[0] + (sqrt(r1) * r2) * C[0]
+		let P2 = (1 - sqrt(r1)) * A[1] + (sqrt(r1) * (1 - r2)) * B[1] + (sqrt(r1) * r2) * C[1]	
+		return [P1, P2]
+	}
+
+	function findTriangleArea(A, B, C) {
+		const S = Math.abs(0.5 * ((A[0]-C[0])*(B[1]-C[1]) - (A[1]-C[1])*(B[0]-C[0])))
+		return S
+	}
+
+
+	function getPoints(poly) {
+		const coords = poly.map(function(i) {
+			return [i.latitude, i.longitude]
+		})
+		return coords;
+	}
+
+
+	// console.log(poly)
+
+	coords = getPoints(poly.coords)
+
+	// coords = coords.map(function(i) {
+	// 	return [(i[0]*1000-parseInt(i[0]*1000))*100, (i[1]*1000-parseInt(i[1]*1000))*100]
+	// })
+	let S = 0
+	let listS = []	
+	let randPoints = []
+
+	let A = [coords[0][0], coords[0][1]]
+	for(let i=1; i<coords.length-1; i++) {
+		B = [coords[i][0], coords[i][1]]
+		C = [coords[i+1][0], coords[i+1][1]]
+		let tempS = findTriangleArea(A, B, C)
+		S += tempS
+		listS.push(tempS)
+		P = getRandomOnTriangle(A, B, C)
+		randPoints.push(P)
+		// console.log(P)
+		// ctx.fillStyle = 'black';
+		// ctx.fillRect(P[0],P[1],5,5)
+	}
+	listS = listS.map(function(i) {
+		return i/S
+	})
+	// console.log(S, listS)
+	let i = 0
+	let ss = Math.random()
+	while(ss>=0) {
+		ss -= listS[i]
+		// console.log(ss)
+		i++
+	}
+	i--;
+	// console.log(randPoints[i])
+
+	return randPoints[i] 
+}
+		// ctx.fillStyle = 'black';
+		// ctx.fillRect(0,0,50,50)
+//let pointWalkingStreet = findRandomPoint(mapArray[0]);
+//console.log("Random point in Walking Street area: " + pointWalkingStreet)
+
+
+function draw(randPoint) {
+	ctx.fillStyle = 'black';
+	ctx.fillRect(randPoint[0], randPoint[1], 5, 5)
+	ctx.lineWidth = 1;
+	ctx.beginPath();
+	ctx.moveTo(coords[0][0], coords[0][1]);
+	for(var i=1; i<coords.length; i++) {
+		ctx.lineTo(coords[i][0], coords[i][1]);
+		ctx.fillText(i, coords[i][0], coords[i][1]);
+	}
+	ctx.closePath();
+	ctx.strokeStyle="black";
+	ctx.stroke();
+}
+
+
+// draw([[1, 2], [100,20], [1000, 100]])
+
+// draw(findRandomPoint(mapArray[2]))
+
+	let pointNaklua = findRandomPoint(mapArray[2]);
+	console.log("Random point in Naklua area: " + pointNaklua)
+	
+	draw(pointNaklua)
+
+
+
+
+
+</script>
+</body>
+</html>
